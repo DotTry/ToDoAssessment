@@ -1,0 +1,3 @@
+[submodule "www/enzyme-example-jest"]
+	path = www/enzyme-example-jest
+	url = https://github.com/DotTry/enzyme-example-jest
