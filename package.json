@@ -4,12 +4,13 @@
   "description": "",
   "main": "www/js/app.js",
   "dependencies": {
+    "cordova-android": "~6.3.0",
+    "cordova-ios": "^4.5.4",
     "phonegap": "^7.1.1",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-router": "^4.2.0",
-    "sinon": "^4.1.3",
-    "cordova-android": "~6.3.0"
+    "sinon": "^4.1.3"
   },
   "devDependencies": {
     "babel": "^6.3.26",
@@ -27,10 +28,10 @@
   "scripts": {
     "test": "npm test --prefix www/enzyme-example-jest",
     "start": "phonegap serve",
-    "run cordova-build-prod-android": "phonegap platform add android && phonegap build android --debug",
-    "run cordova-build-dev-android": "phonegap platform add android && phonegap build android",
-    "run cordova-build-prod-ios": "phonegap platform add ios && phonegap build ios --debug",
-    "run cordova-build-dev-ios": "phonegap platform add ios && phonegap build ios"
+    "cordova-build-prod-android": "phonegap platform add android && phonegap build android --debug",
+    "cordova-build-dev-android": "phonegap platform add android && phonegap build android",
+    "cordova-build-prod-ios": "phonegap platform add ios && phonegap build ios --debug",
+    "cordova-build-dev-ios": "phonegap platform add ios && phonegap build ios"
   },
   "repository": {
     "type": "git",
@@ -44,7 +45,8 @@
   "homepage": "https://github.com/DotTry/SogetiAssessment#readme",
   "cordova": {
     "platforms": [
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

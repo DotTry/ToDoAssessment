@@ -1,5 +1,6 @@
 platforms/android
 platforms/ios
+platforms
 node_modules
 .DS_Store
 www/.DS_Store

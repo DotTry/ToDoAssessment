@@ -1,47 +1,33 @@
-var Header = React.createClass({
+var Header = React.createClass({ //header will have add, back button and title of page.
     render: function () {
         return (
             <header className="bar bar-nav">
-                <a className={"icon icon-left-nav pull-left" + (this.props.back==="true"?"":" hidden")} href="#"></a>
+                <a href="#" className={"icon icon-left-nav pull-left" + (this.props.back==="true"?"":" hidden")}></a>
+                <a href="#add" className={"icon icon-compose pull-right" + (this.props.back==="false"?"":" hidden")}></a>
                 <h1 className="title">{this.props.text}</h1>
             </header>
         );
     }
 });
 
-var SearchBar = React.createClass({
-    searchHandler: function() {
-        this.props.searchHandler(this.refs.searchKey.getDOMNode().value);
-    },
-    render: function () {
-        return (
-            <div className="bar bar-standard bar-header-secondary">
-                <input type="search" ref="searchKey" onChange={this.searchHandler} value={this.props.searchKey}/>
-            </div>
 
-        );
-    }
-});
-
-var EmployeeListItem = React.createClass({
+var ItemListItem = React.createClass({ //individual list items. Will show text and direct router to it's edit page
     render: function () {
         return (
             <li className="table-view-cell media">
-                <a href={"#employees/" + this.props.employee.id}>
-                    <img className="media-object small pull-left" src={"pics/" + this.props.employee.firstName + "_" + this.props.employee.lastName + ".jpg" }/>
-                    {this.props.employee.firstName} {this.props.employee.lastName}
-                    <p>{this.props.employee.title}</p>
+                <a href={"#items/" + this.props.item.id}>
+                    <p >{this.props.item.title}</p>
                 </a>
             </li>
         );
     }
 });
 
-var EmployeeList = React.createClass({
+var ItemList = React.createClass({ //map the list items
     render: function () {
-        var items = this.props.employees.map(function (employee) {
+        var items = this.props.items.map(function (item) {
             return (
-                <EmployeeListItem key={employee.id} employee={employee} />
+                <ItemListItem key={item.id} item={item} />
             );
         });
         return (
@@ -52,117 +38,134 @@ var EmployeeList = React.createClass({
     }
 });
 
-var HomePage = React.createClass({
+var HomePage = React.createClass({ //take cache everytime we enter homepage, editpage, and addpage to return after exiting.
     render: function () {
+      localStorage.setItem("lastPage", " ");
         return (
-            <div>
-                <Header text="Employee Directory" back="false"/>
-                <SearchBar searchKey={this.props.searchKey} searchHandler={this.props.searchHandler}/>
+            <div className={"page " + this.props.position}>
+                <Header text="ToDo List" back="false"/>
+                {/*<!<SearchBar searchKey={this.props.searchKey} searchHandler={this.props.searchHandler}/>*/}
                 <div className="content">
-                    <EmployeeList employees={this.props.employees}/>
+                    <ItemList items={this.props.items}/>
                 </div>
             </div>
         );
     }
 });
 
-var EmployeePage = React.createClass({
+var ItemPage = React.createClass({
     getInitialState: function() {
-        console.log('**** getInitialState');
-        return {employee: {}};
+        return {item: {}, inputValue: ''};
     },
     componentDidMount: function() {
-      console.log('**** componentDidMount');
-      console.log('****' + this.props.employeeId);
-        if (this.props.employeeId) {
-          var self = this;
-          this.props.service.findById(this.props.employeeId).done(function(result) {
-              self.setState({employee: result});
-          });
-        }
+        this.props.service.findById(this.props.itemId).done(function(result) { //Bind data from data.js to the frontend
+            this.setState({item: result});
+            console.log("result" + result);
+            this.setState({inputValue: result.title});
+        }.bind(this));
+    },
+    removeTodo: function(input){
+      this.props.service.removeById(this.props.itemId).done(function(result) {
+          this.setState({item: {}});
+      }.bind(this));
+      router.load(" ");
+    },
+    updateInput: function(input){ //after every change in textfield, we want to document it. Just in case user leaves.
+      this.setState({
+        inputValue: input.target.value
+      });
+      this.props.service.editById(this.props.itemId, input.target.value).done(function(result) { //We will change the text of variable everytime textfield change
+          this.setState({item: result});
+      }.bind(this));
     },
     render: function () {
-      console.log('**** render');
-      console.log(this.state.employee);
-      return (
-            <div>
-                <Header text="Employee" back="true"/>
-                    <div className="card">
-                        <ul className="table-view">
-                            <li className="table-view-cell media">
-                                <img className="media-object big pull-left" src={"pics/" + this.state.employee.firstName + "_" + this.state.employee.lastName + ".jpg" }/>
-                                <h1>{this.state.employee.firstName} {this.state.employee.lastName}</h1>
-                                <p>{this.state.employee.title}</p>
-                            </li>
-                            <li className="table-view-cell media">
-                                <a href={"tel:" + this.state.employee.officePhone} className="push-right">
-                                    <span className="media-object pull-left icon icon-call"></span>
-                                    <div className="media-body">
-                                    Call Office
-                                        <p>{this.state.employee.officePhone}</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li className="table-view-cell media">
-                                <a href={"tel:" + this.state.employee.mobilePhone} className="push-right">
-                                    <span className="media-object pull-left icon icon-call"></span>
-                                    <div className="media-body">
-                                    Call Mobile
-                                        <p>{this.state.employee.mobilePhone}</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li className="table-view-cell media">
-                                <a href={"sms:" + this.state.employee.mobilePhone} className="push-right">
-                                    <span className="media-object pull-left icon icon-sms"></span>
-                                    <div className="media-body">
-                                    SMS
-                                        <p>{this.state.employee.mobilePhone}</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li className="table-view-cell media">
-                                <a href={"mailto:" + this.state.employee.email} className="push-right">
-                                    <span className="media-object pull-left icon icon-email"></span>
-                                    <div className="media-body">
-                                    Email
-                                        <p>{this.state.employee.email}</p>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+      localStorage.setItem('lastPage', "items/" + this.props.itemId);
+        return (
+            <div className={"page " + this.props.position}>
+                <Header text="Edit" back="true"/>
+                <div className="card">
+                    <ul className="table-view">
+
+                        <div className="bar bar-standard">
+                            <input type="text" value={this.state.inputValue} onChange={this.updateInput}  />
+                            <input type="submit" value="Delete" href="#" onClick={this.removeTodo}/>
+                        </div>
+                    </ul>
                 </div>
+            </div>
+        );
+    }
+});
+
+var AddPage = React.createClass({
+    getInitialState: function() {
+        return {item: {}, continueAddText: itemService.continueAddText};
+    },
+    addTodo: function(){
+      itemService.addItem(this.state.continueAddText);
+      this.setState({
+        continueAddText: ' '
+      });
+      //this.state.edit = false; //Prevents random text capture when we exit.
+      router.load(" ");
+      itemService.continueAddText = ' '; //clear the textfield cache.
+      localStorage.setItem("continue", ' ');
+    },
+    updateInput: function(input){
+      itemService.continueAddText = input.target.value;
+      localStorage.setItem("continue", input.target.value); //textfield cache 
+      this.setState({
+        continueAddText: input.target.value
+      });
+      //if(this.state.edit)
+    },
+    render: function () {
+      localStorage.setItem('lastPage', "add");
+        return (
+            <div className={"page " + this.props.position}>
+                <Header text="Add Item" back="true"/>
+                <div className="card">
+                <ul className="table-view">
+                <div className="bar bar-standard">
+                    <input type="text" value={this.state.continueAddText} onChange={this.updateInput}  />
+                    <input type="submit" href="#" onClick={this.addTodo}/>
+                </div>
+                </ul>
+                </div>
+            </div>
         );
     }
 });
 
 var App = React.createClass({
+    mixins: [PageSlider],
     getInitialState: function() {
         return {
-            searchKey: '',
-            employees: [],
-            page: null
+            searchKey: 'a',
+            items: itemService.items
         }
     },
     searchHandler: function(searchKey) {
-        var self = this;
-        employeeService.findByName(searchKey).done(function(employees) {
-            self.setState({searchKey:searchKey, employees: employees, page: <HomePage searchKey={searchKey} searchHandler={self.searchHandler} employees={employees}/>});
-        });
+        itemService.findByName(searchKey).done(function(items) {
+            this.setState({
+                searchKey:searchKey,
+                items: items,
+                pages: [<HomePage key="list" searchHandler={this.searchHandler} searchKey={searchKey} items={items}/>]});
+        }.bind(this));
     },
     componentDidMount: function() {
-        var self = this;
         router.addRoute('', function() {
-            self.setState({page: <HomePage searchKey={self.state.searchKey} searchHandler={self.searchHandler} employees={self.state.employees}/>});
-        });
-        router.addRoute('employees/:id', function(id) {
-            self.setState({page: <EmployeePage employeeId={id} service={employeeService}/>});
-        });
+            this.slidePage(<HomePage key="list" searchHandler={this.searchHandler} searchKey={this.state.searchKey} items={this.state.items}/>);
+        }.bind(this));
+        router.addRoute('items/:id', function(id) {
+            this.slidePage(<ItemPage key="details" itemId={id} service={itemService}/>);
+        }.bind(this));
+        router.addRoute('add', function(id) {
+            this.slidePage(<AddPage key="details" itemId={id} service={itemService}/>);
+        }.bind(this));
         router.start();
-    },
-    render: function() {
-        return this.state.page;
+        console.log(itemService.lastPageRouter +"?");
+        router.load(itemService.lastPageRouter);
     }
 });
 
