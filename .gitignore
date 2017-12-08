@@ -1,0 +1,6 @@
+platforms/android
+platforms/ios
+node_modules
+.DS_Store
+www/.DS_Store
+.git
