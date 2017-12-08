@@ -8,9 +8,12 @@ npm install
 
 
 Running on browser: npm start
+
+![Demo](https://gfycat.com/gifs/detail/HalfForthrightGreatargus)
+
 Android: npm run cordova-build-prod-android
 
-iOS: run cordova-build-prod-ios
+iOS: npm run cordova-build-prod-ios
 
 
 Unit Tests: npm test
