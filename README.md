@@ -9,7 +9,7 @@ npm install
 
 Running on browser: npm start
 
-!(https://gfycat.com/gifs/detail/HalfForthrightGreatargus)
+![Demo](https://gfycat.com/gifs/detail/HalfForthrightGreatargus)
 
 Android: npm run cordova-build-prod-android
 
