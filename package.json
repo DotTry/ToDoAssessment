@@ -25,7 +25,7 @@
     "react-addons-test-utils": "^0.14.7"
   },
   "scripts": {
-    "test": "npm test --prefix www/test",
+    "test": "npm test --prefix www/enzyme-example-jest",
     "start": "phonegap serve",
     "run cordova-build-prod-android": "phonegap platform add android && phonegap build android --debug",
     "run cordova-build-dev-android": "phonegap platform add android && phonegap build android",

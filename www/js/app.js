@@ -1,4 +1,4 @@
-var Header = React.createClass({
+var Header = React.createClass({ //header will have add, back button and title of page.
     render: function () {
         return (
             <header className="bar bar-nav">
@@ -10,26 +10,8 @@ var Header = React.createClass({
     }
 });
 
-var SearchBar = React.createClass({
-    getInitialState: function() {
-        return {searchKey: " "};
-    },
-    searchHandler: function(event) {
-        var searchKey = event.target.value;
-        this.setState({searchKey: searchKey});
-        this.props.searchHandler(searchKey);
-    },
-    render: function () {
-        return (
-            <div className="bar bar-standard bar-header-secondary">
-                <input type="search" value={this.state.symbol} onChange={this.searchHandler}/>
-            </div>
 
-        );
-    }
-});
-
-var ItemListItem = React.createClass({
+var ItemListItem = React.createClass({ //individual list items. Will show text and direct router to it's edit page
     render: function () {
         return (
             <li className="table-view-cell media">
@@ -41,7 +23,7 @@ var ItemListItem = React.createClass({
     }
 });
 
-var ItemList = React.createClass({
+var ItemList = React.createClass({ //map the list items
     render: function () {
         var items = this.props.items.map(function (item) {
             return (
@@ -56,7 +38,7 @@ var ItemList = React.createClass({
     }
 });
 
-var HomePage = React.createClass({
+var HomePage = React.createClass({ //take cache everytime we enter homepage, editpage, and addpage to return after exiting.
     render: function () {
       localStorage.setItem("lastPage", " ");
         return (
@@ -76,23 +58,23 @@ var ItemPage = React.createClass({
         return {item: {}, inputValue: ''};
     },
     componentDidMount: function() {
-        this.props.service.findById(this.props.itemId).done(function(result) { //Item id here.
+        this.props.service.findById(this.props.itemId).done(function(result) { //Bind data from data.js to the frontend
             this.setState({item: result});
             console.log("result" + result);
             this.setState({inputValue: result.title});
         }.bind(this));
     },
     removeTodo: function(input){
-      this.props.service.removeById(this.props.itemId).done(function(result) { //Item id here.
+      this.props.service.removeById(this.props.itemId).done(function(result) {
           this.setState({item: {}});
       }.bind(this));
       router.load(" ");
     },
-    updateInput: function(input){
+    updateInput: function(input){ //after every change in textfield, we want to document it. Just in case user leaves.
       this.setState({
         inputValue: input.target.value
       });
-      this.props.service.editById(this.props.itemId, input.target.value).done(function(result) { //Item id here.
+      this.props.service.editById(this.props.itemId, input.target.value).done(function(result) { //We will change the text of variable everytime textfield change
           this.setState({item: result});
       }.bind(this));
     },
@@ -126,12 +108,12 @@ var AddPage = React.createClass({
       });
       //this.state.edit = false; //Prevents random text capture when we exit.
       router.load(" ");
-      itemService.continueAddText = ' ';
+      itemService.continueAddText = ' '; //clear the textfield cache.
       localStorage.setItem("continue", ' ');
     },
     updateInput: function(input){
       itemService.continueAddText = input.target.value;
-      localStorage.setItem("continue", input.target.value);
+      localStorage.setItem("continue", input.target.value); //textfield cache 
       this.setState({
         continueAddText: input.target.value
       });
