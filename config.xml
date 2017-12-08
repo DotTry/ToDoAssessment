@@ -13,5 +13,5 @@
     <preference name="StatusBarBackgroundColor" value="#FFFFFF" />
     <preference name="StatusBarStyle" value="default" />
     <engine name="android" spec="~6.3.0" />
-    <engine name="ios" spec="~4.5.4" />
+    <engine name="ios" spec="^4.5.4" />
 </widget>
