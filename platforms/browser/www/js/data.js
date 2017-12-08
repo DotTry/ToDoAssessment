@@ -1,4 +1,4 @@
-itemservice = (function () {
+itemService = (function () {
 
     var findById = function (id) {
             var deferred = $.Deferred();

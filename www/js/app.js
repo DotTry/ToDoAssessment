@@ -73,17 +73,18 @@ var HomePage = React.createClass({
 
 var ItemPage = React.createClass({
     getInitialState: function() {
-        return {Item: {}, inputValue: ''};
+        return {item: {}, inputValue: ''};
     },
     componentDidMount: function() {
         this.props.service.findById(this.props.itemId).done(function(result) { //Item id here.
-            this.setState({Item: result});
+            this.setState({item: result});
+            console.log("result" + result);
             this.setState({inputValue: result.title});
         }.bind(this));
     },
     removeTodo: function(input){
       this.props.service.removeById(this.props.itemId).done(function(result) { //Item id here.
-          this.setState({Item: {}});
+          this.setState({item: {}});
       }.bind(this));
       router.load(" ");
     },
@@ -91,12 +92,12 @@ var ItemPage = React.createClass({
       this.setState({
         inputValue: input.target.value
       });
-      this.props.service.editById(this.props.ItemId, input.target.value).done(function(result) { //Item id here.
-          this.setState({Item: result});
+      this.props.service.editById(this.props.itemId, input.target.value).done(function(result) { //Item id here.
+          this.setState({item: result});
       }.bind(this));
     },
     render: function () {
-      localStorage.setItem('lastPage', "items/" + this.props.ItemId);
+      localStorage.setItem('lastPage', "items/" + this.props.itemId);
         return (
             <div className={"page " + this.props.position}>
                 <Header text="Edit" back="true"/>
@@ -116,24 +117,25 @@ var ItemPage = React.createClass({
 
 var AddPage = React.createClass({
     getInitialState: function() {
-        return {Item: {}, continueAddText: itemservice.continueAddText, edit: true};
+        return {item: {}, continueAddText: itemService.continueAddText};
     },
     addTodo: function(){
-      itemservice.addItem(this.state.continueAddText);
+      itemService.addItem(this.state.continueAddText);
       this.setState({
-        continueAddText: ''
+        continueAddText: ' '
       });
-      localStorage.setItem("continue", ' ');
-      this.state.edit = false; //Prevents random text capture when we exit.
+      //this.state.edit = false; //Prevents random text capture when we exit.
       router.load(" ");
+      itemService.continueAddText = ' ';
+      localStorage.setItem("continue", ' ');
     },
     updateInput: function(input){
+      itemService.continueAddText = input.target.value;
+      localStorage.setItem("continue", input.target.value);
       this.setState({
         continueAddText: input.target.value
       });
-      //itemservice.continueAddText = input.target.value;
-      if(this.state.edit)
-      localStorage.setItem("continue", this.state.continueAddText);
+      //if(this.state.edit)
     },
     render: function () {
       localStorage.setItem('lastPage', "add");
@@ -158,11 +160,11 @@ var App = React.createClass({
     getInitialState: function() {
         return {
             searchKey: 'a',
-            items: itemservice.items
+            items: itemService.items
         }
     },
     searchHandler: function(searchKey) {
-        itemservice.findByName(searchKey).done(function(items) {
+        itemService.findByName(searchKey).done(function(items) {
             this.setState({
                 searchKey:searchKey,
                 items: items,
@@ -174,14 +176,14 @@ var App = React.createClass({
             this.slidePage(<HomePage key="list" searchHandler={this.searchHandler} searchKey={this.state.searchKey} items={this.state.items}/>);
         }.bind(this));
         router.addRoute('items/:id', function(id) {
-            this.slidePage(<ItemPage key="details" ItemId={id} service={itemservice}/>);
+            this.slidePage(<ItemPage key="details" itemId={id} service={itemService}/>);
         }.bind(this));
         router.addRoute('add', function(id) {
-            this.slidePage(<AddPage key="details" ItemId={id} service={itemservice}/>);
+            this.slidePage(<AddPage key="details" itemId={id} service={itemService}/>);
         }.bind(this));
         router.start();
-        console.log(itemservice.lastPageRouter +"?");
-        router.load(itemservice.lastPageRouter);
+        console.log(itemService.lastPageRouter +"?");
+        router.load(itemService.lastPageRouter);
     }
 });
 
