@@ -4,6 +4,12 @@ Submission for Todo ReactJS, Cordova webapp
 
 
 ```markdown
+## Requirements: 
+Node(v6+), NPM(v3). 
+Android - Android Studio
+iOS - XCode
+
+
 # Installation
 
 1. git clone https://github.com/DotTry/ToDoAssessment/ 
@@ -11,7 +17,7 @@ Submission for Todo ReactJS, Cordova webapp
 2. npm install
 
 
-#Running on browser: npm start
+# Running on browser: npm start
 
 
 Android: npm run cordova-build-prod-android
