@@ -1,100 +1,64 @@
-itemservice = (function () {
-
-    var findById = function (id) {
-            var deferred = $.Deferred();
-            var obj = null;
-            var l = items.length;
-            for (var i = 0; i < l; i++) {
-                if (items[i].id == id) {
-                    obj = items[i];
-                    break;
+var PageSlider = {
+    getInitialState: function () {
+        return {
+            history: [],
+            pages: [],
+            animating: false
+        }
+    },
+    componentDidUpdate: function() {
+        var skippedCurrentFrame = false,
+            pageEl = this.getDOMNode().lastChild,
+            pages = this.state.pages,
+            l = pages.length,
+            transitionEndHandler = function() {
+                pageEl.removeEventListener('webkitTransitionEnd', transitionEndHandler);
+                pages.shift();
+                this.setState({pages: pages});
+            }.bind(this),
+            animate = function() {
+                if (!skippedCurrentFrame) {
+                    skippedCurrentFrame = true;
+                    requestAnimationFrame(animate.bind(this));
+                } else if (l > 0) {
+                    pages[l - 1].props.position = "center transition";
+                    this.setState({pages: pages, animating: false});
+                    pageEl.addEventListener('webkitTransitionEnd', transitionEndHandler);
                 }
-            }
-            deferred.resolve(obj);
-            return deferred.promise();
-        },
-        editById = function (id, title) {
-            var deferred = $.Deferred();
-            var obj = null;
-            var l = items.length;
-            for (var i = 0; i < l; i++) {
-                if (items[i].id == id) {
-                    items[i].title = title;
-                    obj = items[i];
-                    break;
-                }
-            }
-            localStorage.setItem('items', JSON.stringify(items));
-            deferred.resolve(obj);
-            return deferred.promise();
-        },
-        removeById = function (id, title) {
-            var deferred = $.Deferred();
-            var obj = null;
-            var l = items.length;
-            for (var i = 0; i < l; i++) {
-                if (items[i].id == id) {
-                    items.splice(i, 1);
-                    break;
-                }
-            }
-            localStorage.setItem('items', JSON.stringify(items));
-            deferred.resolve(obj);
-            return deferred.promise();
-        },
+            };
 
-        findByName = function (searchKey) {
-          //items.splice(0,1);
-            var deferred = $.Deferred();
-            var results = items.filter(function (element) {
-                var fullName = element.title;
-                return fullName.toLowerCase().indexOf(searchKey.toLowerCase()) > -1;
-            });
-            deferred.resolve(results);
-            return deferred.promise();
-        },
+        if (this.state.animating) {
+            requestAnimationFrame(animate.bind(this));
+        }
+    },
+    slidePage: function (page) {
+        var history = this.state.history,
+            pages = this.state.pages,
+            l = history.length,
+            hash = window.location.hash,
+            position = "center";
 
-        findByManager = function (managerId) {
-            var deferred = $.Deferred();
-            var results = items.filter(function (element) {
-                return managerId === element.managerId;
-            });
-            deferred.resolve(results);
-            return deferred.promise();
-        },
-        addItem = function(title){
-          var obj = {"id":items[items.length-1].id+1, "title": title}
-          items.push(obj);
-          localStorage.setItem('items', JSON.stringify(items));
-          console.log(JSON.stringify(items));
-        },
+        if (l === 0) {
+            history.push(hash);
+        } else if (hash === history[l - 2]) {
+            history.pop();
+            position = "left";
+        } else {
+            history.push(hash);
+            position = "right";
+        }
 
-        items = (localStorage.getItem('items')===null) ?
-        [   {"id": 1, "title": "President and CEO"},
-            {"id": 2, "title": "VP of Marketing"},
-            {"id": 3, "title": "CFO"},
-            {"id": 4, "title": "VP of Engineering"}] : JSON.parse(localStorage.getItem('items')),
-        /*items = [
-            {"id": 1, "title": "President and CEO"},
-            {"id": 2, "title": "VP of Marketing"},
-            {"id": 3, "title": "CFO"},
-            {"id": 4, "title": "VP of Engineering"}
-          ],*/
+        page.props.position = position;
+        pages.push(page);
 
-        continueAddText = localStorage.getItem('continue');
-        lastPageRouter = (localStorage.getItem('lastPage')===null) ? " " : localStorage.getItem('lastPage');
+        this.setState({history: history, pages: pages, animating: position!=="center"});
 
-    // The public API
-    return {
-        findById: findById,
-        editById: editById,
-        findByName: findByName,
-        findByManager: findByManager,
-        lastPageRouter: lastPageRouter,
-        items: items,
-        continueAddText: continueAddText,
-        addItem: addItem,
-        removeById: removeById
-    };
-
-}());
+    },
+    render: function () {
+        return (
+            <div className="pageslider-container">
+                {this.state.pages}
+            </div>
+        );
+    }
+};
