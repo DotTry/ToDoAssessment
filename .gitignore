@@ -5,6 +5,7 @@ node_modules
 .DS_Store
 www/.DS_Store
 .git
+www/pics
 
 # Logs
 www/test/logs

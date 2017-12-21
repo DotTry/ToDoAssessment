@@ -2,8 +2,11 @@ import React, { PropTypes } from 'react';
 import PageSlider from './pageslider-react';
 //import itemservice from './data';
 //import router from './router';
-var Header = React.createClass({
-    render: function () {
+export class Header extends React.Component { //header will have add, back button and title of page.
+  constructor(props){
+    super(props);
+  }
+    render() {
         return (
             <header className="bar bar-nav">
                 <a href="#" className={"icon icon-left-nav pull-left" + (this.props.back==="true"?"":" hidden")}></a>
@@ -12,10 +15,14 @@ var Header = React.createClass({
             </header>
         );
     }
-});
+}
 
-export var HomePage = React.createClass({
-    render: function () {
+
+export class HomePage extends React.Component {
+  constructor(props){
+    super(props);
+  }
+    render() {
       if(window.localStorage)
         localStorage.setItem("lastPage", " ");
         return (
@@ -28,18 +35,21 @@ export var HomePage = React.createClass({
             </div>
         );
     }
-});
+}
 
-export var SearchBar = React.createClass({
-    getInitialState: function() {
+export class SearchBar extends React.Component {
+  constructor(props){
+    super(props);
+  }
+    getInitialState() {
         return {searchKey: " "};
-    },
-    searchHandler: function(event) {
+    }
+    searchHandler(event) {
         var searchKey = event.target.value;
         this.setState({searchKey: searchKey});
         this.props.searchHandler(searchKey);
-    },
-    render: function () {
+    }
+    render() {
         return (
             <div className="bar bar-standard bar-header-secondary">
                 <input type="search" value={this.state.symbol} onChange={this.searchHandler}/>
@@ -47,9 +57,13 @@ export var SearchBar = React.createClass({
 
         );
     }
-});
-export var ItemListItem = React.createClass({
-    render: function () {
+}
+
+export class ItemListItem extends React.Component {
+  constructor(props){
+    super(props);
+  }
+    render() {
         return (
             <li className="table-view-cell media">
                 <a href={"#items/" + this.props.item.id}>
@@ -58,13 +72,16 @@ export var ItemListItem = React.createClass({
             </li>
         );
     }
-});
+}
 
-export var AddPage = React.createClass({
-    getInitialState: function() {
+export class AddPage extends React.Component {
+  constructor(props){
+    super(props);
+  }
+    getInitialState() {
         return {Item: {}, continueAddText: itemservice.continueAddText, edit: true};
-    },
-    addTodo: function(){
+    }
+    addTodo(){
       itemservice.addItem(this.state.continueAddText);
       this.setState({
         continueAddText: ''
@@ -73,16 +90,16 @@ export var AddPage = React.createClass({
         localStorage.setItem("continue", ' ');
       this.state.edit = false; //Prevents random text capture when we exit.
       router.load(" ");
-    },
-    updateInput: function(input){
+    }
+    updateInput(input){
       this.setState({
         continueAddText: input.target.value
       });
       //itemservice.continueAddText = input.target.value;
       if(this.state.edit)
       localStorage.setItem("continue", this.state.continueAddText);
-    },
-    render: function () {
+    }
+    render() {
       if(window.localStorage)
       localStorage.setItem('lastPage', "add");
         return (
@@ -99,25 +116,28 @@ export var AddPage = React.createClass({
             </div>
         );
     }
-});
+}
 
-export var App = React.createClass({
-    mixins: [PageSlider],
-    getInitialState: function() {
+export class App extends React.Component {
+  constructor(props){
+    super(props);
+  }
+    mixins: [PageSlider]
+    getInitialState() {
         return {
             searchKey: ' ',
             items: itemservice.items
         }
-    },
-    searchHandler: function(searchKey) {
+    }
+    searchHandler(searchKey) {
         itemservice.findByName(searchKey).done(function(items) {
             this.setState({
                 searchKey:searchKey,
                 items: items,
                 pages: [<HomePage key="list" searchHandler={this.searchHandler} searchKey={searchKey} items={items}/>]});
         }.bind(this));
-    },
-    componentDidMount: function() {
+    }
+    componentDidMount() {
         router.addRoute('', function() {
             this.slidePage(<HomePage key="list" searchHandler={this.searchHandler} searchKey={this.state.searchKey} items={this.state.items}/>);
         }.bind(this));
@@ -131,33 +151,36 @@ export var App = React.createClass({
         console.log(itemservice.lastPageRouter +"?");
         router.load(itemservice.lastPageRouter);
     }
-});
+}
 
-export var ItemPage = React.createClass({
-    getInitialState: function() {
+export class ItemPage extends React.Component {
+  constructor(props){
+    super(props);
+  }
+    getInitialState() {
         return {Item: {}, inputValue: ''};
-    },
-    componentDidMount: function() {
+    }
+    componentDidMount() {
         this.props.service.findById(this.props.itemId).done(function(result) { //Item id here.
             this.setState({Item: result});
             this.setState({inputValue: result.title});
         }.bind(this));
-    },
-    removeTodo: function(input){
+    }
+    removeTodo(input){
       this.props.service.removeById(this.props.itemId).done(function(result) { //Item id here.
           this.setState({Item: {}});
       }.bind(this));
       router.load(" ");
-    },
-    updateInput: function(input){
+    }
+    updateInput(input){
       this.setState({
         inputValue: input.target.value
       });
       this.props.service.editById(this.props.ItemId, input.target.value).done(function(result) { //Item id here.
           this.setState({Item: result});
       }.bind(this));
-    },
-    render: function () {
+    }
+    render() {
     if(window.localStorage)
       localStorage.setItem('lastPage', "items/" + this.props.ItemId);
         return (
@@ -175,9 +198,12 @@ export var ItemPage = React.createClass({
             </div>
         );
     }
-});
+}
 /*
-var ItemList = React.createClass({
+var ItemList extends React.Component {
+constructor(props){
+  super(props);
+}
     render: function () {
         var items = this.props.items.map(function (item) {
             return (
@@ -190,12 +216,15 @@ var ItemList = React.createClass({
             </ul>
         );
     }
-});
+}
 
 
 
 
-var App = React.createClass({
+var App extends React.Component {
+constructor(props){
+  super(props);
+}
     mixins: [PageSlider],
     getInitialState: function() {
         return {
@@ -225,7 +254,7 @@ var App = React.createClass({
         console.log(itemservice.lastPageRouter +"?");
         router.load(itemservice.lastPageRouter);
     }
-});
+}
 
 React.render(<App/>, document.body);*/
 export default Header;

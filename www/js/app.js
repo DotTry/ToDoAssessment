@@ -1,7 +1,7 @@
 var Header = React.createClass({ //header will have add, back button and title of page.
     render: function () {
         return (
-            <header className="bar bar-nav">
+            <header className="bar bar-nav header">
                 <a href="#" className={"icon icon-left-nav pull-left" + (this.props.back==="true"?"":" hidden")}></a>
                 <a href="#add" className={"icon icon-compose pull-right" + (this.props.back==="false"?"":" hidden")}></a>
                 <h1 className="title">{this.props.text}</h1>
@@ -14,7 +14,7 @@ var Header = React.createClass({ //header will have add, back button and title o
 var ItemListItem = React.createClass({ //individual list items. Will show text and direct router to it's edit page
     render: function () {
         return (
-            <li className="table-view-cell media">
+            <li className="table-view-cell media btn-1 ">
                 <a href={"#items/" + this.props.item.id}>
                     <p >{this.props.item.title}</p>
                 </a>
@@ -46,7 +46,7 @@ var HomePage = React.createClass({ //take cache everytime we enter homepage, edi
                 <Header text="ToDo List" back="false"/>
                 {/*<!<SearchBar searchKey={this.props.searchKey} searchHandler={this.props.searchHandler}/>*/}
                 <div className="content">
-                    <ItemList items={this.props.items}/>
+                    <ItemList className="list-item" items={this.props.items}/>
                 </div>
             </div>
         );
@@ -88,7 +88,7 @@ var ItemPage = React.createClass({
 
                         <div className="bar bar-standard">
                             <input type="text" value={this.state.inputValue} onChange={this.updateInput}  />
-                            <input type="submit" value="Delete" href="#" onClick={this.removeTodo}/>
+                            <a class="input btn-5"> <input className="input-add" type="submit" value="Delete" href="#" onClick={this.removeTodo}/> </a>
                         </div>
                     </ul>
                 </div>
@@ -102,18 +102,20 @@ var AddPage = React.createClass({
         return {item: {}, continueAddText: itemService.continueAddText};
     },
     addTodo: function(){
-      itemService.addItem(this.state.continueAddText);
-      this.setState({
-        continueAddText: ' '
-      });
-      //this.state.edit = false; //Prevents random text capture when we exit.
-      router.load(" ");
-      itemService.continueAddText = ' '; //clear the textfield cache.
-      localStorage.setItem("continue", ' ');
+      if(this.state.continueAddText){ //test if empty input, else do nothing
+        itemService.addItem(this.state.continueAddText);
+        this.setState({
+          continueAddText: ' '
+        });
+        //this.state.edit = false; //Prevents random text capture when we exit.
+        router.load(" ");
+        itemService.continueAddText = ' '; //clear the textfield cache.
+        localStorage.setItem("continue", ' ');
+      }
     },
     updateInput: function(input){
       itemService.continueAddText = input.target.value;
-      localStorage.setItem("continue", input.target.value); //textfield cache 
+      localStorage.setItem("continue", input.target.value); //textfield cache
       this.setState({
         continueAddText: input.target.value
       });
@@ -128,7 +130,7 @@ var AddPage = React.createClass({
                 <ul className="table-view">
                 <div className="bar bar-standard">
                     <input type="text" value={this.state.continueAddText} onChange={this.updateInput}  />
-                    <input type="submit" href="#" onClick={this.addTodo}/>
+                    <a > <input className="input-add btn-5" type="submit" href="#" onClick={this.addTodo}/> </a>
                 </div>
                 </ul>
                 </div>
