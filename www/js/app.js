@@ -83,7 +83,7 @@ var ItemPage = React.createClass({
         return (
             <div className={"page " + this.props.position}>
                 <Header text="Edit" back="true"/>
-                <div className="card">
+                <div className="card ">
                     <ul className="table-view">
 
                         <div className="bar bar-standard">

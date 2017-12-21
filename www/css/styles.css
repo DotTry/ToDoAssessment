@@ -29,6 +29,7 @@
     padding: 20px 0 4px 0;
     margin: 0;
 
+
 }
 
 input {
@@ -98,7 +99,8 @@ html, body {
 }
 
 .btn-1:hover {
-  background: rgba($red, 0);
+  background: -webkit-linear-gradient(left, #cce6ff, #ffccff);
+  background: linear-gradient(to right, #cce6ff, #ffccff);
   font-weight: 500;
   letter-spacing: 1px;
 
@@ -174,6 +176,11 @@ html, body {
     }
 
 .header{
+  background: -webkit-linear-gradient(left, #25b7c4, #fff);
+  background: linear-gradient(to right, #25b7c4, #fff);
+}
+
+.fill{
   background: -webkit-linear-gradient(left, #25b7c4, #fff);
   background: linear-gradient(to right, #25b7c4, #fff);
 }
