@@ -28,8 +28,6 @@ iOS: npm run cordova-build-prod-ios
 
 
 Unit Tests: npm test
-if error: cd www/enzyme-example-test && npm install
-   then   npm test
    ```
 ![Demo](https://github.com/DotTry/ToDoAssessment/blob/master/www/pics/SillyMediocreKakarikis-size_restricted.gif)
 ![Tests](https://raw.githubusercontent.com/DotTry/ToDoAssessment/master/www/pics/Screen%20Shot%202017-12-08%20at%203.09.30%20AM.png)
